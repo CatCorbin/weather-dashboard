@@ -1,5 +1,4 @@
-const apiKey = 'a19999ae3ca37292a4f34a9d91df9f77';
-
+const apiKey ='https://api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={a19999ae3ca37292a4f34a9d91df9f77}';
 
 function searchWeather() {
     const city = document.getElementById('cityInput').value;
