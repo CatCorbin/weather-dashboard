@@ -1,5 +1,10 @@
 const searchBtn = document.getElementById('searchBtn');
 const currentWeather = document.getElementById('currentWeather');
+window.addEventListener('DOMContentLoaded', (event) => {
+    const defaultCity = "Ogden";
+    displayCurrentWeather(defaultCity);
+});
+
 searchBtn.addEventListener('click', searchWeather)
 function searchWeather() {
     const city = document.getElementById('cityInput').value;
@@ -12,19 +17,18 @@ function searchWeather() {
 //Function to display current weather
 function displayCurrentWeather(city) {
     const currentUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=a19999ae3ca37292a4f34a9d91df9f77&units=imperial`;
-    let fetchRes = fetch(
-        currentUrl)
+    let fetchRes = fetch(currentUrl);
     fetchRes.then(res =>
         res.json()).then(d => {
-            console.log(d)
+            console.log(d);
             currentWeather.innerHTML = `   <h2>
             ${d.name} (10/29/2023)
             <img src="https://openweathermap.org/img/wn/10d@2x.png">
         </h2>
-        <p>Temp:</p>
-        <p>Wind:</p>
-        <p>Humidity:</p>`
-        })
+        <p>Temp: ${d.main.temp} °F</p>
+        <p>Wind: ${d.wind.speed} mph</p>
+        <p>Humidity: ${d.main.humidity}%</p>`
+        });
     //Update the currentWeather with current weather
 }
 
