@@ -1,5 +1,7 @@
 const searchBtn = document.getElementById('searchBtn');
 const currentWeather = document.getElementById('currentWeather');
+const cityList = JSON.parse(localStorage.getItem("cityList"))||[];
+const searchHistory = document.getElementById("searchHistory");
 window.addEventListener('DOMContentLoaded', (event) => {
     const defaultCity = "Ogden";
     displayCurrentWeather(defaultCity);
@@ -21,9 +23,14 @@ function displayCurrentWeather(city) {
     fetchRes.then(res =>
         res.json()).then(d => {
             console.log(d);
+            if (cityList.includes(d.name) === false){
+                cityList.push(d.name)
+                displayCities()
+                localStorage.setItem("cityList",JSON.stringify(cityList))
+            }
             currentWeather.innerHTML = `   <h2>
-            ${d.name} (10/29/2023)
-            <img src="https://openweathermap.org/img/wn/10d@2x.png">
+            ${d.name} (${dayjs.unix(d.dt).format("MM/DD/YYYY")})
+            <img src="https://openweathermap.org/img/wn/${d.weather[0].icon}@2x.png">
         </h2>
         <p>Temp: ${d.main.temp} °F</p>
         <p>Wind: ${d.wind.speed} mph</p>
@@ -39,11 +46,31 @@ function displayForecast(city) {
         apiKey)
     fetchRes.then(res =>
         res.json()).then(d => {
-            console.log(d)
+            selector.innerHTML=""
+            for (let i = 4; i < 40; i=i+8) {
+                console.log(d.list[i])
+                selector.innerHTML+=` <div class="col-sm-2">
+                <div class="card">
+                  <h5>${dayjs.unix(d.list[i].dt).format("MM/DD/YYYY")}</h5>
+                  <img src="https://openweathermap.org/img/wn/${d.list[i].weather[0].icon}@2x.png" class="w-50" alt="...">
+                  <div class="card-body">
+                    <p class="card-text">Temp: ${d.list[i].main.temp}</p>
+                    <p>Wind: ${d.list[i].wind.speed}</p>
+                    <p>Humidity: ${d.list[i].main.humidity}</p>
+                  </div>
+                </div>`
+            }
         })
     // Update the forecast with the forecast
+    var selector = document.getElementById("selector");
 }
-
+function displayCities(){
+searchHistory.innerHTML = ""
+for (let i = 0; i < cityList.length; i++) {
+    searchHistory.innerHTML+= `<br><button class="w-50">${cityList[i]}</button>`
+}
+}
+displayCities()
 //Function to update search history
 function updateSearchHistory(city) {
     const searchHistory = document.getElementById('searchHistory');
